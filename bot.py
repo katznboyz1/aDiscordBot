@@ -42,6 +42,9 @@ async def on_message(message) -> None:
                 localUtilsLib.stdout.log('Exception occured in (2) while handling <@{}>\'s message: {}'.format(message.author.id), error)
             try: #3
                 if (message.content.strip().lower() in ['<@{}> help'.format(program.bot.user.id), '<@{}> help'.format(program.bot.user.id)] and messageHandled == False):
+                    embed = discord.Embed(title = 'Click here to go to my help page', color = program.colors['neutral-blue'], url = 'https://katznboyz1.github.io/aDiscordBot/commands.html')
+                    embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                    await program.bot.send_message(message.channel, embed = embed)
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (3) while handling <@{}>\'s message: {}'.format(message.author.id), error)
             '''try: #4
