@@ -1,7 +1,7 @@
-import discord, goslate, json, os, PIL.Image, PIL.ImageDraw, PIL.ImageFont, random, time
+import discord, json, os, PIL.Image, PIL.ImageDraw, PIL.ImageFont, random, time
 import ___utils___ as localUtilsLib
 
-localUtilsLib.stdout.log('bot.py has started running.')
+localUtilsLib.stdout.log('bot.py has started running with PID {}.'.format(str(os.getpid())))
 
 class program:
     bot = discord.Client()
@@ -10,7 +10,6 @@ class program:
         'failure-red':0xe60004,
         'neutral-blue':0x0059ff,
     }
-    gs = goslate.Goslate()
 
 @program.bot.event
 async def on_message(message) -> None:
@@ -41,46 +40,25 @@ async def on_message(message) -> None:
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (2) while handling <@{}>\'s message: {}'.format(message.author.id), error)
             try: #3
-                if (message.content.strip().lower() in ['<@{}> help'.format(program.bot.user.id), '<@{}> help'.format(program.bot.user.id)] and messageHandled == False):
+                if (message.content.strip().lower() == '<@{}> help'.format(program.bot.user.id) and messageHandled == False):
                     embed = discord.Embed(title = 'Click here to go to my help page', color = program.colors['neutral-blue'], url = 'https://katznboyz1.github.io/aDiscordBot/commands.html')
                     embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
                     await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (3) while handling <@{}>\'s message: {}'.format(message.author.id), error)
-            '''try: #4
-                if (message.content.strip().lower() == '<@{}> senselang'.format(program.bot.user.id) and messageHandled == False):
-                    embed = discord.Embed(title = 'Next step for the command:', description = 'Please send the text that you want me to translate here. You have 30 seconds to do so.', color = program.colors['neutral-blue'])
-                    embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
-                    await program.bot.send_message(message.channel, embed = embed)
-                    msg = await program.bot.wait_for_message(timeout = 30, author = message.author)
-                    if (msg):
-                        embed = discord.Embed(title = 'This may take a little bit', description = 'Due to the amount of users using this feature, this command may take a little bit. Give it about 15 seconds [max].', color = program.colors['neutral-blue'])
-                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
-                        await program.bot.send_message(message.channel, embed = embed)
-                        language = program.gs.detect(msg.content)
-                        try:
-                            success = False
-                            for tries in range(3):
-                                try:
-                                    language = program.gs.get_languages()[language]
-                                    success = True
-                                    break
-                                except:
-                                    await time.sleep(5)
-                            if (success == False):
-                                language = 'error'
-                        except:
-                            language = 'unknown'
-                        embed = discord.Embed(title = 'Success!', description = 'The language used in that message is: {}.'.format(language.lower().capitalize()), color = program.colors['success-green'])
-                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
-                        await program.bot.send_message(message.channel, embed = embed)
-                    else:
-                        embed = discord.Embed(title = 'Command failed', description = 'The 30 seconds are up <@{}>.'.format(message.author.id), color = program.colors['failure-red'])
-                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
-                        await program.bot.send_message(message.channel, embed = embed)
+            try: #4
+                print (message.content.strip().lower().split(' ')[0:2])
+                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'say'] and messageHandled == False):
+                    newMessage = message.content.split(' ')[2:]
+                    newNewMessage = ''
+                    for each in newMessage:
+                        newNewMessage += str(each) + ' '
+                    await program.bot.send_message(message.channel, newNewMessage)
+                    await program.bot.delete_message(message)
+                    messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (4) while handling <@{}>\'s message: {}'.format(message.author.id), error)'''
-            
+                localUtilsLib.stdout.log('Exception occured in (4) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 @program.bot.event
 async def on_ready() -> None:
