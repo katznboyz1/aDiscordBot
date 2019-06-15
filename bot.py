@@ -48,7 +48,6 @@ async def on_message(message) -> None:
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (3) while handling <@{}>\'s message: {}'.format(message.author.id), error)
             try: #4
-                print (message.content.strip().lower().split(' ')[0:2])
                 if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'say'] and messageHandled == False):
                     newMessage = message.content.split(' ')[2:]
                     newNewMessage = ''
@@ -59,6 +58,36 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (4) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+            try: #5
+                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'prune'] and messageHandled == False):
+                    pruneAmount = message.content.split(' ')[2]
+                    integerConversionSuccess = False
+                    integerConversionError = 'No error provided.'
+                    try:
+                        pruneAmount = int(pruneAmount)
+                        integerConversionSuccess = True
+                        if (pruneAmount > 0 and pruneAmount < 91):
+                            pass
+                        else:
+                            integerConversionSuccess = False
+                            integerConversionError = 'The amount of messages you wanted me to delete was too large. You said to delete {} messages but I can only delete 90 at a time.'.format(pruneAmount)
+                        if (message.author.permissions_in(message.channel).administrator):
+                            pass
+                        else:
+                            integerConversionSuccess = False
+                            integerConversionError = 'You must be a server administrator to use this command.'
+                    except ValueError:
+                        integerConversionError = 'The amount of messages you wanted me to delete was not a valid number.'
+                    if (integerConversionSuccess == False):
+                        embed = discord.Embed(title = 'Error', description = integerConversionError, color = program.colors['failure-red'])
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                    else:
+                        async for messages in program.bot.logs_from(message.channel, limit = (pruneAmount + 1)):
+                            await program.bot.delete_message(messages)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (5) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 @program.bot.event
 async def on_ready() -> None:
