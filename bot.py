@@ -23,7 +23,7 @@ async def on_message(message) -> None:
                     embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
                     await program.bot.send_message(message.channel, embed = embed)
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (1) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+                localUtilsLib.stdout.log('Exception occured in (1) while handling <@{}>\'s message: {}'.format(message.author.id, error))
             try: #2
                 if (message.content.strip().lower() == '<@{}> taskkill'.format(program.bot.user.id) and messageHandled == False): #(2)
                     if (int(message.author.id) in localUtilsLib.presets.getManifestData()['authorized-bot-admins']):
@@ -38,7 +38,7 @@ async def on_message(message) -> None:
                         await program.bot.send_message(message.channel, embed = embed)
                     messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (2) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+                localUtilsLib.stdout.log('Exception occured in (2) while handling <@{}>\'s message: {}'.format(message.author.id, error))
             try: #3
                 if (message.content.strip().lower() == '<@{}> help'.format(program.bot.user.id) and messageHandled == False):
                     embed = discord.Embed(title = 'Click here to go to my help page', color = program.colors['neutral-blue'], url = 'https://katznboyz1.github.io/aDiscordBot/commands.html')
@@ -46,7 +46,7 @@ async def on_message(message) -> None:
                     await program.bot.send_message(message.channel, embed = embed)
                     messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (3) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+                localUtilsLib.stdout.log('Exception occured in (3) while handling <@{}>\'s message: {}'.format(message.author.id, error))
             try: #4
                 if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'say'] and messageHandled == False):
                     newMessage = message.content.split(' ')[2:]
@@ -57,7 +57,7 @@ async def on_message(message) -> None:
                     await program.bot.delete_message(message)
                     messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (4) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+                localUtilsLib.stdout.log('Exception occured in (4) while handling <@{}>\'s message: {}'.format(message.author.id, error))
             try: #5
                 if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'prune'] and messageHandled == False):
                     pruneAmount = message.content.split(' ')[2]
@@ -87,7 +87,7 @@ async def on_message(message) -> None:
                             await program.bot.delete_message(messages)
                     messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (5) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+                localUtilsLib.stdout.log('Exception occured in (5) while handling <@{}>\'s message: {}'.format(message.author.id, error))
             try: #6
                 if (message.content.strip().lower() == '<@{}> cursedimage'.format(program.bot.user.id) and messageHandled == False):
                     randomImage = './media/serveTheCycleImages/' + str(random.choice(os.listdir('./media/serveTheCycleImages')))
@@ -95,6 +95,27 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (6) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+            try: #7
+                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'commandhelp'] and messageHandled == False):
+                    commandsJsonData = {}
+                    commandsJsonData = json.loads(str(open('./commands.json').read()))['commands']
+                    commandExists = False
+                    commandData = {}
+                    for each in commandsJsonData:
+                        if (commandsJsonData[each]['commandName'] == message.content.strip().split(' ')[2]):
+                            commandExists = True
+                            commandData = commandsJsonData[each]
+                    if (commandExists):
+                        embed = discord.Embed(title = 'Help page for "{}"'.format(message.content.strip().split(' ')[2]), description = 'Command name: {}\nCommand description: {}\nCommand usage: `{}`'.format(commandData['commandName'], commandData['description'], commandData['usage']), color = program.colors['success-green']) 
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                    else:
+                        embed = discord.Embed(title = 'Error', description = 'I was not able to find that command, try using `@aDiscordBot help` to look over the list of commands.', color = program.colors['failure-red'])
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (7) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 @program.bot.event
 async def on_ready() -> None:

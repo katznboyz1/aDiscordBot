@@ -34,6 +34,13 @@
             "usage":"@aDiscordBot cursedimage",
             "workInProgress":0,
             "commandName":"cursedimage"
+        },
+        "@aDiscordBot commandhelp [command]":{
+            "description":"The bot will send info on the specific command.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot commandhelp",
+            "workInProgress":0,
+            "commandName":"commandhelp"
         }
     }
 }
