@@ -1,0 +1,28 @@
+{
+    "commands":{
+        "@aDiscordBot taskill":{
+            "description":"Kills the bot's main program.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot taskkill",
+            "workInProgress":0
+        },
+        "@aDiscordBot say [message]":{
+            "description":"The bot will say what the user said.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot say Hello world!",
+            "workInProgress":0
+        },
+        "@aDiscordBot purge [amount]":{
+            "description":"The bot will delete the amount of messages you put.",
+            "availableToWhom":["Bot Admins", "Server Admins"],
+            "usage":"@aDiscordBot purge 20",
+            "workInProgress":1
+        },
+        "@aDiscordBot cursedimage":{
+            "description":"The bot will send a random cursed image.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot cursedimage",
+            "workInProgress":0
+        }
+    }
+}
