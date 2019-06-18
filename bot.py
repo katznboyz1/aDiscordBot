@@ -93,7 +93,6 @@ async def on_message(message) -> None:
                     randomImage = './media/serveTheCycleImages/' + str(random.choice(os.listdir('./media/serveTheCycleImages')))
                     await program.bot.send_file(message.channel, randomImage)
                     messageHandled = True
-                    print (randomImage)
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (6) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
