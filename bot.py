@@ -88,6 +88,14 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (5) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+            try: #6
+                if (message.content.strip().lower() == '<@{}> cursedimage'.format(program.bot.user.id) and messageHandled == False):
+                    randomImage = './media/serveTheCycleImages/' + str(random.choice(os.listdir('./media/serveTheCycleImages')))
+                    await program.bot.send_file(message.channel, randomImage)
+                    messageHandled = True
+                    print (randomImage)
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (6) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 @program.bot.event
 async def on_ready() -> None:
