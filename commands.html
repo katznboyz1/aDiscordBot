@@ -19,10 +19,6 @@
     <body>
         <p class = 'headertext1 centeredtext1'>ADiscordBot Command List</p>
         <div id = 'commandList'>
-            <p>@aDiscordBot taskkill - Kills the bot's main program. [Bot admin only command]</p>
-            <p>@aDiscordBot say [text] - The bot will say whatever you wrote.</p>
-            <p>@aDiscordBot purge [amount] - The bot will delete said amount of messages (This command is currently still a work in progress, its pretty slow). [Server admin only command]</p>
-            <p>@aDiscordBot cursedimage - The bot will send a random cursed image.</p>
         </div>
         <p class = 'centeredtext1' style = 'color:c7c7c7;'>
             <a href = 'https://discordapp.com/oauth2/authorize?&client_id=584105414568968203&scope=bot&permissions=8' class = 'footerlink1'>Invite Link</a>
@@ -33,4 +29,27 @@
         </p>
         <img src = './bot-profile-picture.png' class = 'centeredimage1' id = 'footerimage1'/>
     </body>
+    <script>
+        fetch('./commands.json', {method:'GET'}).then(function(response){return response.json();}).then(function(json) {
+            commands = json['commands'];
+            for (command in commands) {
+                commandData = commands[command];
+                element = document.createElement('p');
+                workInProgress = 'Error';
+                if (commandData['workInProgress'] == 0) {
+                    workInProgress = 'This command is ready to be used.' 
+                } else {
+                    workInProgress = 'This command is a work in progress.'
+                }
+                element.innerHTML = `
+Command: %cmnd%<br>
+Description: %desc%<br>
+Usage: %usag%<br>
+Can be used by: %usedby%<br>
+%wip%
+`.replace('%cmnd%', command).replace('%desc%', commandData['description']).replace('%usag%', commandData['usage']).replace('%usedby%', commandData['availableToWhom']).replace('%wip%', workInProgress)
+                document.getElementById('commandList').appendChild(element);
+            }
+        })
+    </script>
 </html>
