@@ -116,6 +116,22 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (7) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+            try: #8
+                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'sheriff'] and messageHandled == False):
+                    sheriffTemplate = '''
+**Howdy**
+.........:cowboy:
+.?..?.?
+?....?....?
+:point_down:.??..:point_down:
+......?..?
+......?...?
+.......:boot:...:boot:
+'''.replace('?', message.content.strip().lower().split(' ')[2]).replace('.', ' ')
+                    await program.bot.send_message(message.channel, sheriffTemplate)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (8) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 @program.bot.event
 async def on_ready() -> None:
