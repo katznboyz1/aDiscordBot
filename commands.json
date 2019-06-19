@@ -42,12 +42,12 @@
             "workInProgress":0,
             "commandName":"commandhelp"
         },
-        "@aDiscordBot howdy [emoji]":{
+        "@aDiscordBot sheriff [emoji]":{
             "description":"The bot will make an emoji sheriff out of the emoji you want.",
             "availableToWhom":["Bot Admins", "Users", "Server Admins"],
-            "usage":"@aDiscordBot howdy :100:",
+            "usage":"@aDiscordBot sheriff :100:",
             "workInProgress":0,
-            "commandName":"howdy"
+            "commandName":"sheriff"
         }
     }
 }
