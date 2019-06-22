@@ -51,7 +51,7 @@ async def on_message(message) -> None:
         prefix = str(serverData['server_prefix'])
 
 
-        if (message.content.startswith(prefix)):
+        if (message.content.startswith(prefix) or message.content.startswith('<@{}>'.format(program.bot.user.id))):
             localUtilsLib.stdout.log('A user with the ID {} sent me a message.'.format(message.author.id))
             messageHandled = False
 
