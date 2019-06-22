@@ -3,6 +3,7 @@ dirs = [
     'utils',
     'utils/logs',
     'utils/tmp',
+    'data',
 ]
 for each in dirs:
     try:
