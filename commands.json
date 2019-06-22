@@ -38,7 +38,7 @@
         "@aDiscordBot commandhelp [command]":{
             "description":"The bot will send info on the specific command.",
             "availableToWhom":["Bot Admins", "Users", "Server Admins"],
-            "usage":"@aDiscordBot commandhelp",
+            "usage":"@aDiscordBot commandhelp say",
             "workInProgress":0,
             "commandName":"commandhelp"
         },
