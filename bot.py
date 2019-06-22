@@ -159,7 +159,7 @@ async def on_message(message) -> None:
                     commandExists = False
                     commandData = {}
                     for each in commandsJsonData:
-                        if (commandsJsonData[each]['commandName'].lower() == message.content.strip().split(' ')[2]).lower():
+                        if (commandsJsonData[each]['commandName'] == message.content.strip().split(' ')[2]):
                             commandExists = True
                             commandData = commandsJsonData[each]
                     if (commandExists):
