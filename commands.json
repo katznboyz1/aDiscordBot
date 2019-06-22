@@ -69,6 +69,13 @@
             "usage":"@aDiscordBot toggledrops",
             "workInProgress":0,
             "commandName":"toggledrops"
+        },
+        "@aDiscordBot dailyxp":{
+            "description":"This will let you collect 500 XP every day. This can only be done once a day. It resets at 12am GMT.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot dailyxp",
+            "workInProgress":0,
+            "commandName":"dailyxp"
         }
     }
 }

@@ -13,7 +13,8 @@ class program:
     }
     xpValues = {
         'xpPerMessage':15,
-        'xpMinAndMaxChanceForLootbox':[50, 500],
+        'xpMinAndMaxChanceForLootbox':[50, 1500],
+        'dailyCollectAmount':500,
     }
 
 @program.bot.event
@@ -27,6 +28,7 @@ async def on_message(message) -> None:
                 localUtilsLib.stdout.log('Could not access the user log for {}. Error: ({})'.format(str(message.author.id), str(error)))
         requiredKeys = [
             ['score_global', '0'],
+            ['last_daily_collect_timestamp_days_since_unix_epoch', '0'],
         ]
         for key in requiredKeys:
             if (str(key[0]) not in dataFileContents):
@@ -267,6 +269,25 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (11) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+
+            
+            try: #12
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'dailyxp'] and messageHandled == False):
+                    lastDaily = int(dataFileContents['last_daily_collect_timestamp_days_since_unix_epoch'])
+                    currentDate = localUtilsLib._time.getDaysSinceUnixEpoch()
+                    if (currentDate > lastDaily):
+                        embed = discord.Embed(title = 'Daily XP collected', description = 'You have recived {} XP, <@{}>.'.format(program.xpValues['dailyCollectAmount'], message.author.id), color = program.colors['success-green']) 
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                        dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + program.xpValues['dailyCollectAmount'])
+                        dataFileContents['last_daily_collect_timestamp_days_since_unix_epoch'] = str(currentDate)
+                    else:
+                        embed = discord.Embed(title = 'Failed to collect daily XP', description = 'It hasnt been a day since you last collected your XP, <@{}>!'.format(message.author.id), color = program.colors['failure-red']) 
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (12) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 
             try: #final-1
