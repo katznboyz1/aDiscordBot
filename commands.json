@@ -62,6 +62,13 @@
             "usage":"@aDiscordBot setprefix !db",
             "workInProgress":0,
             "commandName":"prefix"
+        },
+        "@aDiscordBot toggledrops":{
+            "description":"This will turn on/off the random lootbox drops on your server.",
+            "availableToWhom":["Server Admins"],
+            "usage":"@aDiscordBot toggledrops",
+            "workInProgress":0,
+            "commandName":"toggledrops"
         }
     }
 }

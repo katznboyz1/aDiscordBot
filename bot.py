@@ -239,6 +239,33 @@ async def on_message(message) -> None:
                 localUtilsLib.stdout.log('Exception occured in (10) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 
+            try: #11
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'toggledrops'] and messageHandled == False):
+                    finalMessage = {'error':False, 'header':'ooga booga', 'content':'you shouldnt see this text', 'barcolor':'success-green'}
+                    if (message.author.permissions_in(message.channel).administrator):
+                        pass
+                    else:
+                        finalMessage['error'] = True
+                        finalMessage['header'] = 'Error'
+                        finalMessage['content'] = 'You dont have the permissions to use this command. To use this command, you must be a server administrator.'
+                        finalMessage['barcolor'] = 'failure-red'
+                    if (finalMessage['error'] == False):
+                        oldState = bool(int(serverData['allow_randomlootboxes']))
+                        serverData['allow_randomlootboxes'] = str(int(not oldState))
+                        finalMessage['header'] = 'Success!'
+                        if (oldState):
+                            finalMessage['content'] = 'Lootboxes and other random drops are now disabled on this server.'
+                        else:
+                            finalMessage['content'] = 'Lootboxes and other random drops are now enabled on this server.'
+                        finalMessage['barcolor'] = 'success-green'
+                    embed = discord.Embed(title = finalMessage['header'], description = finalMessage['content'], color = program.colors[finalMessage['barcolor']]) 
+                    embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                    await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (11) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+
+
             try: #final-1
                 if (messageHandled == False):
                     embed = discord.Embed(title = 'Error', description = 'I wasnt able to find that command, <@{}>! Try typing `@aDiscordBot help` for my list of commands.'.format(message.author.id), color = program.colors['failure-red']) 
@@ -266,6 +293,6 @@ async def on_message(message) -> None:
 @program.bot.event
 async def on_ready() -> None:
     localUtilsLib.stdout.log('The bot is online.')
-    await program.bot.change_presence(game = discord.Game(name = 'Try @\'ing me!'))
+    await program.bot.change_presence(game = discord.Game(name = 'Mmmm. Testing in production I am. Unwise that is.'))
 
 program.bot.run(localUtilsLib.presets.getManifestData()['discord-bot-key'])
