@@ -48,6 +48,13 @@
             "usage":"@aDiscordBot sheriff :100:",
             "workInProgress":0,
             "commandName":"sheriff"
+        },
+        "@aDiscordBot profile":{
+            "description":"The bot will show you your profile.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot profile",
+            "workInProgress":0,
+            "commandName":"profile"
         }
     }
 }

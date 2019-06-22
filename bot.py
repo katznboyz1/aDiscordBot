@@ -10,10 +10,31 @@ class program:
         'failure-red':0xe60004,
         'neutral-blue':0x0059ff,
     }
+    xpValues = {
+        'xpPerMessage':15,
+        'xpMinAndMaxChanceForLootbox':[15, 200],
+    }
 
 @program.bot.event
 async def on_message(message) -> None:
     if (message.author != program.bot.user):
+
+
+        dataFileContents = {}
+        if (str(message.author.id) + '.user.json' in os.listdir('data')):
+            try:
+                dataFileContents = json.loads(str(open('./data/{}.user.json'.format(str(message.author.id))).read()))
+            except Exception as error:
+                localUtilsLib.stdout.log('Could not access the user log for {}. Error: ({})'.format(str(message.author.id), str(error)))
+        requiredKeys = [
+            ['score_global', '0'],
+        ]
+        for key in requiredKeys:
+            if (str(key[0]) not in dataFileContents):
+                dataFileContents[str(key[0])] = str(key[1])
+        dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + int(program.xpValues['xpPerMessage']))
+
+
         if (message.content.startswith('<@{}>'.format(program.bot.user.id))):
             localUtilsLib.stdout.log('A user with the ID {} sent me a message.'.format(message.author.id))
             messageHandled = False
@@ -117,7 +138,7 @@ async def on_message(message) -> None:
                     commandExists = False
                     commandData = {}
                     for each in commandsJsonData:
-                        if (commandsJsonData[each]['commandName'] == message.content.strip().split(' ')[2]):
+                        if (commandsJsonData[each]['commandName'].lower() == message.content.strip().split(' ')[2]).lower():
                             commandExists = True
                             commandData = commandsJsonData[each]
                     if (commandExists):
@@ -151,6 +172,26 @@ async def on_message(message) -> None:
                 localUtilsLib.stdout.log('Exception occured in (8) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 
+            try: #7
+                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'profile'] and messageHandled == False):
+                    wantedProfileId = str(message.author.id)
+                    done = False
+                    if ('{}.user.json'.format(wantedProfileId) in os.listdir('data')):
+                        pass
+                    else:
+                        embed = discord.Embed(title = 'Error', description = 'You dont seem to be in my record, try sending that message again, it should be fixed by then.', color = program.colors['failure-red'])
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                        done = True
+                    if (not done):
+                        embed = discord.Embed(title = 'Here is your profile, {}'.format(message.author.name), description = 'XP: {}'.format(dataFileContents['score_global']), color = program.colors['neutral-blue'])
+                        embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                        await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (7) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+
+
             try: #final-1
                 if (messageHandled == False):
                     embed = discord.Embed(title = 'Error', description = 'I wasnt able to find that command, <@{}>! Try typing `@aDiscordBot help` for my list of commands.'.format(message.author.id), color = program.colors['failure-red']) 
@@ -159,6 +200,14 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (final-1) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+
+
+        try:
+            dataFile = open('./data/{}.user.json'.format(str(message.author.id)), 'w')
+            dataFile.write(json.dumps(dataFileContents))
+            dataFile.close()
+        except Exception as error:
+            localUtilsLib.stdout.log('Failed saving user data to file for {}. Error: ({})'.format(message.author.id, error))
 
 @program.bot.event
 async def on_ready() -> None:
