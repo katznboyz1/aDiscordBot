@@ -9,17 +9,16 @@ class program:
         'success-green':0x00ff22,
         'failure-red':0xe60004,
         'neutral-blue':0x0059ff,
+        'surprise-yellow':0xfff700,
     }
     xpValues = {
         'xpPerMessage':15,
-        'xpMinAndMaxChanceForLootbox':[15, 200],
+        'xpMinAndMaxChanceForLootbox':[50, 500],
     }
 
 @program.bot.event
 async def on_message(message) -> None:
     if (message.author != program.bot.user):
-
-
         dataFileContents = {}
         if (str(message.author.id) + '.user.json' in os.listdir('data')):
             try:
@@ -44,11 +43,15 @@ async def on_message(message) -> None:
         requiredKeys = [
             ['allow_randomlootboxes', '1'],
             ['server_prefix', '<@{}>'.format(program.bot.user.id)],
+            ['lingering_lootboxes', '0'],
         ]
         for key in requiredKeys:
             if (str(key[0]) not in serverData):
                 serverData[str(key[0])] = str(key[1])
         prefix = str(serverData['server_prefix'])
+
+
+        randomLootboxInteger = random.randint(0, 200)
 
 
         if (message.content.startswith(prefix) or message.content.startswith('<@{}>'.format(program.bot.user.id))):
@@ -276,13 +279,26 @@ async def on_message(message) -> None:
                 localUtilsLib.stdout.log('Exception occured in (final-1) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 
+        if (str(serverData['allow_randomlootboxes']) == '1' and randomLootboxInteger == 1):
+            serverData['lingering_lootboxes'] = str(int(serverData['lingering_lootboxes']) + 1)
+            embed = discord.Embed(title = 'Woah!', description = 'A lootbox just spawned, type `pickup` to take it. Better be fast before somebody else gets it. Did you know that its only a 1/200 chance that these things spawn!', color = program.colors['surprise-yellow']) 
+            embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+            await program.bot.send_message(message.channel, embed = embed)
+        if (message.content.strip().lower() == 'pickup' and int(serverData['lingering_lootboxes']) > 0):
+            serverData['lingering_lootboxes'] = str(int(serverData['lingering_lootboxes']) - 1)
+            amountWon = random.randint(*program.xpValues['xpMinAndMaxChanceForLootbox'])
+            embed = discord.Embed(title = '{} was the fastest this time!'.format(message.author.name), description = '<@{}>, you picked up the lootbox first! You picked up {} coins from the box.'.format(message.author.id, amountWon), color = program.colors['surprise-yellow']) 
+            embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+            await program.bot.send_message(message.channel, embed = embed)
+            dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + amountWon)
+
+
         try:
             dataFile = open('./data/{}.user.json'.format(str(message.author.id)), 'w')
             dataFile.write(json.dumps(dataFileContents))
             dataFile.close()
         except Exception as error:
             localUtilsLib.stdout.log('Failed saving user data to file for {}. Error: ({})'.format(message.author.id, error))
-        
         try:
             dataFile = open('./data/{}.server.json'.format(str(message.server.id)), 'w')
             dataFile.write(json.dumps(serverData))
