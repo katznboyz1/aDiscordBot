@@ -35,14 +35,30 @@ async def on_message(message) -> None:
         dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + int(program.xpValues['xpPerMessage']))
 
 
-        if (message.content.startswith('<@{}>'.format(program.bot.user.id))):
+        serverData = {}
+        if (str(message.server.id) + '.server.json' in os.listdir('data')):
+            try:
+                serverData = json.loads(str(open('./data/{}.server.json'.format(str(message.server.id))).read()))
+            except Exception as error:
+                localUtilsLib.stdout.log('Could not access the server log for {}. Error: ({})'.format(str(message.server.id), str(error)))
+        requiredKeys = [
+            ['allow_randomlootboxes', '1'],
+            ['server_prefix', '<@{}>'.format(program.bot.user.id)],
+        ]
+        for key in requiredKeys:
+            if (str(key[0]) not in serverData):
+                serverData[str(key[0])] = str(key[1])
+        prefix = str(serverData['server_prefix'])
+
+
+        if (message.content.startswith(prefix)):
             localUtilsLib.stdout.log('A user with the ID {} sent me a message.'.format(message.author.id))
             messageHandled = False
 
 
             try: #1
                 if (message.content.strip() == '<@{}>'.format(program.bot.user.id) and messageHandled == False): #1
-                    embed = discord.Embed(title = 'Hello there!', description = '<@{}>, I see that you @ mentioned me. If you would like to see my help menu, then type `@aDiscordBot help` for a website that lists all my commands.'.format(message.author.id), color = program.colors['neutral-blue'])
+                    embed = discord.Embed(title = 'Hello there!', description = '<@{}>, I see that you @ mentioned me. If you would like to see my help menu, then type `@aDiscordBot help` for a website that lists all my commands. If you would like to change my prefix from {} to something else, use my `setprefix` command!'.format(message.author.id, prefix), color = program.colors['neutral-blue'])
                     embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
                     await program.bot.send_message(message.channel, embed = embed)
                     messageHandled = True
@@ -51,7 +67,7 @@ async def on_message(message) -> None:
 
 
             try: #2
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'taskkill'] and messageHandled == False): #(2)
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'taskkill'] and messageHandled == False): #(2)
                     if (int(message.author.id) in localUtilsLib.presets.getManifestData()['authorized-bot-admins']):
                         embed = discord.Embed(title = 'Success', description = '<@{}>, the bot was killed.'.format(message.author.id), color = program.colors['success-green'])
                         embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
@@ -68,7 +84,7 @@ async def on_message(message) -> None:
 
 
             try: #3
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'help'] and messageHandled == False):
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'help'] and messageHandled == False):
                     embed = discord.Embed(title = 'Click here to go to my help page', color = program.colors['neutral-blue'], url = 'https://katznboyz1.github.io/aDiscordBot/commands.html')
                     embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
                     await program.bot.send_message(message.channel, embed = embed)
@@ -78,7 +94,7 @@ async def on_message(message) -> None:
 
 
             try: #4
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'say'] and messageHandled == False):
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'say'] and messageHandled == False):
                     newMessage = message.content.split(' ')[2:]
                     newNewMessage = ''
                     for each in newMessage:
@@ -91,7 +107,7 @@ async def on_message(message) -> None:
 
 
             try: #5
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'prune'] and messageHandled == False):
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'prune'] and messageHandled == False):
                     pruneAmount = message.content.split(' ')[2]
                     integerConversionSuccess = False
                     integerConversionError = 'No error provided.'
@@ -123,7 +139,7 @@ async def on_message(message) -> None:
 
 
             try: #6
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'cursedimage'] and messageHandled == False):
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'cursedimage'] and messageHandled == False):
                     randomImage = './media/serveTheCycleImages/' + str(random.choice(os.listdir('./media/serveTheCycleImages')))
                     await program.bot.send_file(message.channel, randomImage)
                     messageHandled = True
@@ -132,7 +148,7 @@ async def on_message(message) -> None:
 
 
             try: #7
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'commandhelp'] and messageHandled == False):
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'commandhelp'] and messageHandled == False):
                     commandsJsonData = {}
                     commandsJsonData = json.loads(str(open('./commands.json').read()))['commands']
                     commandExists = False
@@ -155,7 +171,7 @@ async def on_message(message) -> None:
 
 
             try: #8
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'sheriff'] and messageHandled == False):
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'sheriff'] and messageHandled == False):
                     sheriffTemplate = '''
 **Howdy**
 .........:cowboy:
@@ -172,8 +188,8 @@ async def on_message(message) -> None:
                 localUtilsLib.stdout.log('Exception occured in (8) while handling <@{}>\'s message: {}'.format(message.author.id), error)
 
 
-            try: #7
-                if (message.content.strip().lower().split(' ')[0:2] == ['<@{}>'.format(program.bot.user.id), 'profile'] and messageHandled == False):
+            try: #9
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'profile'] and messageHandled == False):
                     wantedProfileId = str(message.author.id)
                     done = False
                     if ('{}.user.json'.format(wantedProfileId) in os.listdir('data')):
@@ -189,7 +205,38 @@ async def on_message(message) -> None:
                         await program.bot.send_message(message.channel, embed = embed)
                     messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (7) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+                localUtilsLib.stdout.log('Exception occured in (9) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+            
+
+            try: #10
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'setprefix'] and messageHandled == False):
+                    finalMessage = {'error':False, 'header':'ooga booga', 'content':'you shouldnt see this text', 'barcolor':'success-green'}
+                    if (message.author.permissions_in(message.channel).administrator):
+                        pass
+                    else:
+                        finalMessage['error'] = True
+                        finalMessage['header'] = 'Error'
+                        finalMessage['content'] = 'You dont have the permissions to use this command. To use this command, you must be a server administrator.'
+                        finalMessage['barcolor'] = 'failure-red'
+                    newPrefix = str(message.content.strip().lower().split(' ')[2])
+                    if (len(newPrefix) <= 25):
+                        pass
+                    else:
+                        finalMessage['error'] = True
+                        finalMessage['header'] = 'Error'
+                        finalMessage['content'] = 'The prefix must be less than 25 letters long.'
+                        finalMessage['barcolor'] = 'failure-red'
+                    if (finalMessage['error'] == False):
+                        finalMessage['header'] = 'Success!'
+                        finalMessage['content'] = 'The prefix for {} has been set to {}.'.format(message.server.name, newPrefix)
+                        finalMessage['barcolor'] = 'success-green'
+                        serverData['server_prefix'] = str(newPrefix)
+                    embed = discord.Embed(title = finalMessage['header'], description = finalMessage['content'], color = program.colors[finalMessage['barcolor']]) 
+                    embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                    await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (10) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 
             try: #final-1
@@ -208,9 +255,17 @@ async def on_message(message) -> None:
             dataFile.close()
         except Exception as error:
             localUtilsLib.stdout.log('Failed saving user data to file for {}. Error: ({})'.format(message.author.id, error))
+        
+        try:
+            dataFile = open('./data/{}.server.json'.format(str(message.server.id)), 'w')
+            dataFile.write(json.dumps(serverData))
+            dataFile.close()
+        except Exception as error:
+            localUtilsLib.stdout.log('Failed saving server data to file for {}. Error: ({})'.format(message.server.id, error))
 
 @program.bot.event
 async def on_ready() -> None:
     localUtilsLib.stdout.log('The bot is online.')
+    await program.bot.change_presence(game = discord.Game(name = 'Try @\'ing me!'))
 
 program.bot.run(localUtilsLib.presets.getManifestData()['discord-bot-key'])

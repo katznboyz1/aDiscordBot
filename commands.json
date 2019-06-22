@@ -9,7 +9,7 @@
         },
         "@aDiscordBot taskill":{
             "description":"Kills the bot's main program.",
-            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "availableToWhom":["Bot Admins"],
             "usage":"@aDiscordBot taskkill",
             "workInProgress":0,
             "commandName":"taskkill"
@@ -23,7 +23,7 @@
         },
         "@aDiscordBot purge [amount]":{
             "description":"The bot will delete the amount of messages you put.",
-            "availableToWhom":["Bot Admins", "Server Admins"],
+            "availableToWhom":["Server Admins"],
             "usage":"@aDiscordBot purge 20",
             "workInProgress":1,
             "commandName":"purge"
@@ -55,6 +55,13 @@
             "usage":"@aDiscordBot profile",
             "workInProgress":0,
             "commandName":"profile"
+        },
+        "@aDiscordBot setprefix [prefix]":{
+            "description":"The bot will set the server prefix to what you want..",
+            "availableToWhom":["Server Admins"],
+            "usage":"@aDiscordBot setprefix !db",
+            "workInProgress":0,
+            "commandName":"prefix"
         }
     }
 }
