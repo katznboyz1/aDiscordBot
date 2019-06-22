@@ -79,7 +79,7 @@ class _time:
         epoch = datetime.datetime.utcfromtimestamp(0)
         today = datetime.datetime.today()
         distance = today - epoch
-        return int(distance[0])
+        return int(distance.days)
 class presets:
     def getManifestData(path = './manifest.json') -> dict:
         return json.loads(str(open(path).read()))
