@@ -83,6 +83,13 @@
             "usage":"@aDiscordBot bet 100",
             "workInProgress":0,
             "commandName":"bet"
+        },
+        "@aDiscordBot give [amount] [@user]":{
+            "description":"This command lets you transfer your money to someone else.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot give 100 @invalid-user#0000",
+            "workInProgress":0,
+            "commandName":"give"
         }
     }
 }

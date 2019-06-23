@@ -327,6 +327,56 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (13) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+            
+
+            try: #13
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'give'] and messageHandled == False):
+                    finalMessage = {'error':False, 'header':'ooga booga', 'content':'you shouldnt see this text', 'barcolor':'success-green'}
+                    amount = 0
+                    destinationUser = str(message.content.strip().lower().split(' ')[3])
+                    integerConversionError = False
+                    userIDParseError = False
+                    userIDDestination = 0
+                    try:
+                        amount = int(message.content.strip().lower().split(' ')[2])
+                    except:
+                        integerConversionError = True
+                        finalMessage['error'] = True
+                        finalMessage['header'] = 'Error'
+                        finalMessage['content'] = '{} is not a vaild integer.'.format(message.content.strip().lower().split(' ')[2])
+                        finalMessage['barcolor'] = 'failure-red'
+                    try:
+                        if (str(message.author.id) in destinationUser):
+                            userIDParseError = True
+                            finalMessage['error'] = True
+                            finalMessage['header'] = 'Error'
+                            finalMessage['content'] = 'You cant give money to yourself!'
+                            finalMessage['barcolor'] = 'failure-red'
+                        if (not userIDParseError):
+                            userIDDestination = int(destinationUser.split('<')[1].split('>')[0].split('@')[1])
+                    except:
+                        userIDParseError = True
+                        finalMessage['error'] = True
+                        finalMessage['header'] = 'Error'
+                        finalMessage['content'] = '{} is not a valid @ mention.'.format(destinationUser)
+                        finalMessage['barcolor'] = 'failure-red'
+                    if (not integerConversionError and not userIDParseError):
+                        if (amount <= int(dataFileContents['score_global'])):
+                            finalMessage['header'] = 'Success'
+                            finalMessage['content'] = 'Successfully gave {} credits to <@{}>'.format(amount, userIDDestination)
+                            finalMessage['barcolor'] = 'success-green'
+                            #dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + amount)
+                        else:
+                            finalMessage['error'] = True
+                            finalMessage['header'] = 'Error'
+                            finalMessage['content'] = 'You dont have that much money. You can only give money you have.'
+                            finalMessage['barcolor'] = 'failure-red'
+                    embed = discord.Embed(title = finalMessage['header'], description = finalMessage['content'], color = program.colors[finalMessage['barcolor']]) 
+                    embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                    await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (13) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 
             try: #final-1
