@@ -365,7 +365,11 @@ async def on_message(message) -> None:
                             finalMessage['header'] = 'Success'
                             finalMessage['content'] = 'Successfully gave {} credits to <@{}>'.format(amount, userIDDestination)
                             finalMessage['barcolor'] = 'success-green'
-                            #dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + amount)
+                            userJsonCustom = json.loads(str(open('./data/{}.user.json'.format(userIDDestination)).read()))
+                            userJsonCustom['score_global'] = str(int(userJsonCustom['score_global']) + amount)
+                            tmpFile = open('./data/{}.user.json'.format(userIDDestination), 'w')
+                            tmpFile.write(json.dumps(userJsonCustom))
+                            tmpFile.close()
                         else:
                             finalMessage['error'] = True
                             finalMessage['header'] = 'Error'
