@@ -288,6 +288,45 @@ async def on_message(message) -> None:
                     messageHandled = True
             except Exception as error:
                 localUtilsLib.stdout.log('Exception occured in (12) while handling <@{}>\'s message: {}'.format(message.author.id, error))
+            
+
+            try: #13
+                if (message.content.strip().lower().split(' ')[0:2] == [prefix, 'bet'] and messageHandled == False):
+                    finalMessage = {'error':False, 'header':'ooga booga', 'content':'you shouldnt see this text', 'barcolor':'success-green'}
+                    amount = 0
+                    integerConversionError = False
+                    try:
+                        amount = int(message.content.strip().lower().split(' ')[2])
+                    except:
+                        integerConversionError = True
+                        finalMessage['error'] = True
+                        finalMessage['header'] = 'Error'
+                        finalMessage['content'] = '{} is not a vaild integer.'.format(message.content.strip().lower().split(' ')[2])
+                        finalMessage['barcolor'] = 'failure-red'
+                    if (not integerConversionError):
+                        if (amount <= int(dataFileContents['score_global'])):
+                            winner = random.choice([True, False])
+                            if (winner):
+                                finalMessage['header'] = 'You\'re a winner!'
+                                finalMessage['content'] = 'You just won {} more XP points!'.format(amount)
+                                finalMessage['barcolor'] = 'neutral-blue'
+                            else:
+                                finalMessage['header'] = 'You lost.'
+                                finalMessage['content'] = 'Unfortunately you have lost {} XP points...'.format(amount)
+                                finalMessage['barcolor'] = 'neutral-blue'
+                                amount = -amount
+                            dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + amount)
+                        else:
+                            finalMessage['error'] = True
+                            finalMessage['header'] = 'Error'
+                            finalMessage['content'] = 'You dont even have {} XP. Try betting for something less, like an amount that you can afford.'.format(amount)
+                            finalMessage['barcolor'] = 'failure-red'
+                    embed = discord.Embed(title = finalMessage['header'], description = finalMessage['content'], color = program.colors[finalMessage['barcolor']]) 
+                    embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
+                    await program.bot.send_message(message.channel, embed = embed)
+                    messageHandled = True
+            except Exception as error:
+                localUtilsLib.stdout.log('Exception occured in (13) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 
             try: #final-1
@@ -305,6 +344,7 @@ async def on_message(message) -> None:
             embed = discord.Embed(title = 'Woah!', description = 'A lootbox just spawned, type `pickup` to take it. Better be fast before somebody else gets it. Did you know that its only a 1/200 chance that these things spawn!', color = program.colors['surprise-yellow']) 
             embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
             await program.bot.send_message(message.channel, embed = embed)
+            localUtilsLib.stdout.log('Spawned a lootbox in a channel with the ID {}.'.format(message.channel.id))
         if (message.content.strip().lower() == 'pickup' and int(serverData['lingering_lootboxes']) > 0):
             serverData['lingering_lootboxes'] = str(int(serverData['lingering_lootboxes']) - 1)
             amountWon = random.randint(*program.xpValues['xpMinAndMaxChanceForLootbox'])
@@ -312,6 +352,7 @@ async def on_message(message) -> None:
             embed.set_author(name = '{}'.format(program.bot.user.name), icon_url = 'https://raw.githubusercontent.com/katznboyz1/aDiscordBot/master/bot-profile-picture.png')
             await program.bot.send_message(message.channel, embed = embed)
             dataFileContents['score_global'] = str(int(dataFileContents['score_global']) + amountWon)
+            localUtilsLib.stdout.log('A user with the ID {} picked up a lootbox in the channel with the ID {}.'.format(message.author.id, message.channel.id))
 
 
         try:

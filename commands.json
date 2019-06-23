@@ -76,6 +76,13 @@
             "usage":"@aDiscordBot dailyxp",
             "workInProgress":0,
             "commandName":"dailyxp"
+        },
+        "@aDiscordBot bet":{
+            "description":"This command lets you bet XP. There is a 50/50 chance you win or lose. If you go bankrupt by using this command, dont tell us you werent warned.",
+            "availableToWhom":["Bot Admins", "Users", "Server Admins"],
+            "usage":"@aDiscordBot bet 100",
+            "workInProgress":0,
+            "commandName":"bet"
         }
     }
 }
