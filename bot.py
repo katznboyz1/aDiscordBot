@@ -390,7 +390,7 @@ async def on_message(message) -> None:
                     await program.bot.send_message(message.channel, embed = embed)
                     messageHandled = True
             except Exception as error:
-                localUtilsLib.stdout.log('Exception occured in (final-1) while handling <@{}>\'s message: {}'.format(message.author.id), error)
+                localUtilsLib.stdout.log('Exception occured in (final-1) while handling <@{}>\'s message: {}'.format(message.author.id, error))
 
 
         if (str(serverData['allow_randomlootboxes']) == '1' and randomLootboxInteger == 1):
